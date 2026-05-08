@@ -2,582 +2,257 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>服务器状态监控</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Server Status</title>
 <style>
-  /* ===== Apple PPT 风格 - 磨砂玻璃 + 渐变 ===== */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;
+  width:720px;
+  background:{% if theme=='dark' %}#000{% else %}#f2f2f6{% endif %};
+  color:{% if theme=='dark' %}#f5f5f7{% else %}#1d1d1f{% endif %};
+  -webkit-font-smoothing:antialiased;
+  line-height:1.4
+}
+.container{max-width:640px;margin:0 auto;padding:48px 40px}
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    width: 840px;
-    padding: 36px;
-    background: {% if theme == 'dark' %}linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%){% else %}linear-gradient(135deg, #f0f2f5 0%, #e8ecf2 40%, #f5f7fa 100%){% endif %};
-    color: {% if theme == 'dark' %}#ffffff{% else %}#1a1a2e{% endif %};
-    min-height: 100%;
-  }
+/* Header */
+.header{margin-bottom:40px}
+.header h1{
+  font-size:34px;font-weight:700;letter-spacing:-0.5px;
+  background:linear-gradient(135deg,#007aff,#5856d6,#34c759);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px
+}
+.header .host{font-size:15px;color:{% if theme=='dark' %}rgba(255,255,255,0.55){% else %}rgba(0,0,0,0.5){% endif %};font-weight:400;margin-bottom:2px}
+.header .meta{font-size:13px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
 
-  .container {
-    max-width: 768px;
-    margin: 0 auto;
-  }
+/* Cards */
+.card{
+  background:{% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(255,255,255,0.9){% endif %};
+  border-radius:16px;
+  padding:24px;
+  margin-bottom:16px;
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border:{% if theme=='dark' %}1px solid rgba(255,255,255,0.12){% else %}1px solid rgba(0,0,0,0.06){% endif %}
+}
+.card-label{
+  font-size:11px;font-weight:600;letter-spacing:2px;
+  color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.3){% endif %};
+  text-transform:uppercase;margin-bottom:12px
+}
 
-  /* ===== 顶部标题 ===== */
-  .header {
-    text-align: center;
-    padding: 32px 28px 22px;
-    margin-bottom: 28px;
-    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.85){% endif %};
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-radius: 28px;
-    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.6){% endif %};
-    box-shadow: 0 8px 32px {% if theme == 'dark' %}rgba(0,0,0,0.3){% else %}rgba(0,0,0,0.06){% endif %};
-  }
-  .header-icon { font-size: 42px; margin-bottom: 10px; }
-  .header h1 {
-    font-size: 28px; font-weight: 700;
-    background: linear-gradient(135deg, #00d2ff, #7c3aed, #10b981);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 1.5px;
-  }
-  .header .subtitle {
-    font-size: 14px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.45){% endif %};
-    margin-top: 8px;
-  }
-  .header .hostname {
-    font-size: 16px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.75){% else %}rgba(0,0,0,0.6){% endif %};
-    margin-top: 6px;
-    font-weight: 500;
-  }
+/* Data row */
+.row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:6px}
+.col{font-size:13px}
+.col .l{font-size:11px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
+.col .v{font-size:16px;font-weight:600}
+.col .v.g{color:#34c759}
+.col .v.w{color:#ff9500}
+.col .v.d{color:#ff3b30}
 
-  /* ===== 磨砂玻璃卡片 ===== */
-  .card {
-    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.85){% endif %};
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-radius: 24px;
-    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.6){% endif %};
-    box-shadow: 0 4px 24px {% if theme == 'dark' %}rgba(0,0,0,0.2){% else %}rgba(0,0,0,0.04){% endif %};
-    padding: 24px 28px;
-    margin-bottom: 20px;
-  }
-  .card-title {
-    font-size: 16px; font-weight: 600;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.45){% endif %};
-    text-transform: uppercase; letter-spacing: 2px;
-    margin-bottom: 16px;
-  }
-  .card-title span { margin-right: 8px; }
+/* Temp tag */
+.temp{display:inline-block;padding:2px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.temp.c{background:rgba(52,199,89,0.15);color:#34c759}
+.temp.w{background:rgba(255,149,0,0.15);color:#ff9500}
+.temp.h{background:rgba(255,59,48,0.15);color:#ff3b30}
 
-  /* ===== 图表区域 ===== */
-  .chart-wrapper {
-    position: relative;
-    width: 100%;
-    height: 160px;
-    margin: 12px 0 6px;
-  }
-  .chart-wrapper.chart-sm {
-    height: 140px;
-  }
-  .chart-wrapper canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+/* Chart */
+.cw{width:100%;height:100px;margin:10px 0 0}
+.cw canvas{width:100%;height:100%;display:block}
 
-  /* ===== 数据行 ===== */
-  .stats-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  .stat-item {
-    font-size: 14px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.85){% else %}rgba(0,0,0,0.75){% endif %};
-  }
-  .stat-item .label {
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};
-    font-size: 12px;
-    letter-spacing: 0.5px;
-  }
-  .stat-item .value {
-    font-weight: 600;
-    font-size: 16px;
-  }
-  .stat-item .value.num-good { color: #10b981; }
-  .stat-item .value.num-warn { color: #f59e0b; }
-  .stat-item .value.num-danger { color: #ef4444; }
+/* Dual panel */
+.dual{display:flex;gap:0}
+.dual .m{flex:2;padding-right:16px;border-right:1px solid {% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.06){% endif %}}
+.dual .s{flex:1;padding-left:16px}
+.dual .s .col{margin-bottom:8px}
+.dual .s .col:last-child{margin-bottom:0}
+.st{font-size:10px;letter-spacing:1.5px;color:{% if theme=='dark' %}rgba(255,255,255,0.25){% else %}rgba(0,0,0,0.25){% endif %};text-transform:uppercase;margin-bottom:8px}
 
-  /* ===== 温度标签 ===== */
-  .temp-tag {
-    display: inline-block;
-    padding: 3px 14px;
-    border-radius: 24px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .temp-tag.cool { background: rgba(16,185,129,0.15); color: #10b981; }
-  .temp-tag.warm { background: rgba(245,158,11,0.15); color: #f59e0b; }
-  .temp-tag.hot  { background: rgba(239,68,68,0.15); color: #ef4444; }
+/* Disk */
+.dk{margin-bottom:10px}
+.dk:last-child{margin-bottom:0}
+.dh{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.dp{font-weight:600}
+.ds{color:{% if theme=='dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};font-size:12px}
+.db{height:4px;background:{% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.06){% endif %};border-radius:2px;overflow:hidden}
+.dbf{height:100%;border-radius:2px;background:linear-gradient(90deg,#34c759,#ff9500)}
+.dbf.d{background:linear-gradient(90deg,#ff9500,#ff3b30)}
 
-  /* ===== 内存+Swap 双列布局 ===== */
-  .dual-panel {
-    display: flex;
-    gap: 0;
-  }
-  .dual-panel .panel-main {
-    flex: 2;
-    padding-right: 20px;
-    border-right: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(0,0,0,0.06){% endif %};
-  }
-  .dual-panel .panel-side {
-    flex: 1;
-    padding-left: 20px;
-  }
-  .panel-side .stat-item {
-    margin-bottom: 8px;
-  }
-  .panel-side .stat-item:last-child {
-    margin-bottom: 0;
-  }
-  .panel-subtitle {
-    font-size: 12px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %};
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 8px;
-  }
+/* Network legend */
+.nl{display:flex;gap:16px;justify-content:center;margin-bottom:4px;font-size:12px}
+.ni{display:flex;align-items:center;gap:4px}
+.nd{width:8px;height:8px;border-radius:50%;display:inline-block}
 
-  /* ===== 进度条（硬盘用） ===== */
-  .disk-item {
-    margin-bottom: 14px;
-  }
-  .disk-item:last-child { margin-bottom: 0; }
-  .disk-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  .disk-path {
-    font-weight: 600;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.85){% else %}rgba(0,0,0,0.75){% endif %};
-  }
-  .disk-detail {
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.5){% endif %};
-    font-size: 13px;
-  }
-  .disk-bar {
-    height: 8px;
-    background: {% if theme == 'dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.08){% endif %};
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .disk-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #10b981, #f59e0b);
-  }
-  .disk-bar-fill.danger { background: linear-gradient(90deg, #f59e0b, #ef4444); }
-
-  /* ===== 系统信息 ===== */
-  .sysinfo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 28px;
-  }
-  .sysinfo-item {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    padding: 6px 0;
-    border-bottom: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.04){% else %}1px solid rgba(0,0,0,0.04){% endif %};
-  }
-  .sysinfo-item .slabel {
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};
-  }
-  .sysinfo-item .svalue {
-    font-weight: 500;
-    text-align: right;
-  }
-
-  /* ===== 网络图例 ===== */
-  .net-legend {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 6px;
-    font-size: 13px;
-  }
-  .net-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .net-legend-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    display: inline-block;
-  }
+/* Sysinfo grid */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}
+.si{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid {% if theme=='dark' %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.04){% endif %}}
+.si .a{color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
+.si .b{font-weight:500;text-align:right}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- ===== 标题 ===== -->
+  <!-- HEADER -->
   <div class="header">
-    <div class="header-icon">📊</div>
-    <h1>服务器状态监控</h1>
-    <div class="hostname">{{ hostname }}</div>
-    <div class="subtitle">📅 {{ time_range }} {% if sysinfo.is_docker %}| 🐳 Docker{% endif %}</div>
+    <div class="host">{{ hostname }}</div>
+    <h1>Server Status</h1>
+    <div class="meta">{{ time_range }}{% if sysinfo.is_docker %} · 🐳 Docker{% endif %}</div>
   </div>
 
-  <!-- ===== 1. CPU ===== -->
+  <!-- CPU -->
   <div class="card">
-    <div class="card-title"><span>🖥️</span>CPU 中央处理器</div>
-    <div class="stats-row">
-      <div class="stat-item">
-        <span class="label">型号</span><br>
-        <span class="value">{{ cpu.model }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">核心</span><br>
-        <span class="value">{{ cpu.cores }}C / {{ cpu.threads }}T</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">频率</span><br>
-        <span class="value">{{ cpu.freq }} MHz</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">当前</span><br>
-        <span class="value {% if cpu.current > 80 %}num-danger{% elif cpu.current > 60 %}num-warn{% else %}num-good{% endif %}">{{ cpu.current }}%</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">平均 / 峰值</span><br>
-        <span class="value">{{ cpu.avg }}% / {{ cpu.max }}%</span>
-      </div>
+    <div class="card-label">🖥 CPU</div>
+    <div class="row">
+      <div class="col"><span class="l">型号</span><br><span class="v">{{ cpu.model }}</span></div>
+      <div class="col"><span class="l">核心</span><br><span class="v">{{ cpu.cores }}C/{{ cpu.threads }}T</span></div>
+      <div class="col"><span class="l">当前</span><br><span class="v {% if cpu.current>80 %}d{% elif cpu.current>60 %}w{% else %}g{% endif %}">{{ cpu.current }}%</span></div>
+      <div class="col"><span class="l">平均</span><br><span class="v">{{ cpu.avg }}%</span></div>
+      <div class="col"><span class="l">峰值</span><br><span class="v">{{ cpu.max }}%</span></div>
       {% if cpu.temp %}
-      <div class="stat-item">
-        <span class="label">🌡️ 温度</span><br>
-        <span class="temp-tag {% if cpu.temp < 60 %}cool{% elif cpu.temp < 80 %}warm{% else %}hot{% endif %}">{{ cpu.temp }}°C</span>
-      </div>
+      <div class="col"><span class="l">🌡 温度</span><br><span class="temp {% if cpu.temp<60 %}c{% elif cpu.temp<80 %}w{% else %}h{% endif %}">{{ cpu.temp }}°C</span></div>
       {% endif %}
     </div>
-    <div class="chart-wrapper">
-      <canvas id="cpuChart"></canvas>
-    </div>
+    <div class="cw"><canvas id="cpuC"></canvas></div>
   </div>
 
-  <!-- ===== 2. 内存 + Swap（合并一行） ===== -->
+  <!-- MEM + SWAP -->
   <div class="card">
-    <div class="card-title"><span>💾</span>内存 & 交换分区</div>
-    <div class="dual-panel">
-      <!-- 左侧 2/3 内存 -->
-      <div class="panel-main">
-        <div class="panel-subtitle">Memory 内存</div>
-        <div class="stats-row" style="margin-bottom:4px;">
-          <div class="stat-item">
-            <span class="label">总量</span><br>
-            <span class="value">{{ mem.total }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">已用</span><br>
-            <span class="value {% if mem.percent > 90 %}num-danger{% elif mem.percent > 75 %}num-warn{% else %}num-good{% endif %}">{{ mem.used }} ({{ mem.percent }}%)</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">可用</span><br>
-            <span class="value">{{ mem.available }}</span>
-          </div>
+    <div class="card-label">💾 Memory & Swap</div>
+    <div class="dual">
+      <div class="m">
+        <div class="st">Memory 内存</div>
+        <div class="row">
+          <div class="col"><span class="l">已用</span><br><span class="v {% if mem.percent>90 %}d{% elif mem.percent>75 %}w{% else %}g{% endif %}">{{ mem.used }} ({{ mem.percent }}%)</span></div>
+          <div class="col"><span class="l">总量</span><br><span class="v">{{ mem.total }}</span></div>
+          <div class="col"><span class="l">可用</span><br><span class="v">{{ mem.available }}</span></div>
         </div>
-        <div class="chart-wrapper chart-sm">
-          <canvas id="memChart"></canvas>
-        </div>
+        <div class="cw"><canvas id="memC"></canvas></div>
       </div>
-      <!-- 右侧 1/3 Swap -->
-      <div class="panel-side">
-        <div class="panel-subtitle">Swap 交换</div>
-        <div class="stat-item">
-          <span class="label">总量</span><br>
-          <span class="value">{{ swap.total }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="label">已用</span><br>
-          <span class="value {% if swap.percent > 50 %}num-danger{% elif swap.percent > 30 %}num-warn{% else %}num-good{% endif %}">{{ swap.used }} ({{ swap.percent }}%)</span>
-        </div>
-        <div class="stat-item">
-          <span class="label">空闲</span><br>
-          <span class="value">{{ swap.free }}</span>
-        </div>
+      <div class="s">
+        <div class="st">Swap 交换</div>
+        <div class="col"><span class="l">总量</span><br><span class="v">{{ swap.total }}</span></div>
+        <div class="col"><span class="l">已用</span><br><span class="v {% if swap.percent>50 %}d{% elif swap.percent>30 %}w{% else %}g{% endif %}">{{ swap.used }} ({{ swap.percent }}%)</span></div>
+        <div class="col"><span class="l">空闲</span><br><span class="v">{{ swap.free }}</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ===== 3. GPU ===== -->
+  <!-- GPU -->
   {% if gpu %}
   <div class="card">
-    <div class="card-title"><span>🎮</span>GPU 图形处理器</div>
-    <div class="stats-row">
-      <div class="stat-item">
-        <span class="label">型号</span><br>
-        <span class="value">{{ gpu.name }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">显存</span><br>
-        <span class="value">{{ gpu.mem_used }} / {{ gpu.mem_total }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">核心使用率</span><br>
-        <span class="value {% if gpu.percent > 80 %}num-danger{% elif gpu.percent > 60 %}num-warn{% else %}num-good{% endif %}">{{ gpu.percent }}%</span>
-      </div>
+    <div class="card-label">🎮 GPU</div>
+    <div class="row">
+      <div class="col"><span class="l">型号</span><br><span class="v">{{ gpu.name }}</span></div>
+      <div class="col"><span class="l">显存</span><br><span class="v">{{ gpu.mem_used }} / {{ gpu.mem_total }}</span></div>
+      <div class="col"><span class="l">使用率</span><br><span class="v {% if gpu.percent>80 %}d{% elif gpu.percent>60 %}w{% else %}g{% endif %}">{{ gpu.percent }}%</span></div>
       {% if gpu.temp %}
-      <div class="stat-item">
-        <span class="label">🌡️ 温度</span><br>
-        <span class="temp-tag {% if gpu.temp < 60 %}cool{% elif gpu.temp < 80 %}warm{% else %}hot{% endif %}">{{ gpu.temp }}°C</span>
-      </div>
+      <div class="col"><span class="l">🌡 温度</span><br><span class="temp {% if gpu.temp<60 %}c{% elif gpu.temp<80 %}w{% else %}h{% endif %}">{{ gpu.temp }}°C</span></div>
       {% endif %}
     </div>
-    <div class="chart-wrapper">
-      <canvas id="gpuChart"></canvas>
-    </div>
+    <div class="cw"><canvas id="gpuC"></canvas></div>
   </div>
   {% endif %}
 
-  <!-- ===== 4. 存储 ===== -->
+  <!-- DISK -->
   <div class="card">
-    <div class="card-title"><span>💽</span>存储设备 Storage</div>
+    <div class="card-label">💽 Storage</div>
     {% if disks %}
-    {% for disk in disks %}
-    <div class="disk-item">
-      <div class="disk-header">
-        <span class="disk-path">📁 {{ disk.mountpoint }}</span>
-        <span class="disk-detail">{{ disk.used }} / {{ disk.total }} ({{ disk.percent }}%){% if disk.temp %}  •  🌡️ {{ disk.temp }}°C{% endif %}</span>
-      </div>
-      <div class="disk-bar">
-        <div class="disk-bar-fill {% if disk.percent > 90 %}danger{% endif %}" style="width:{{ disk.percent }}%"></div>
-      </div>
+    {% for d in disks %}
+    <div class="dk">
+      <div class="dh"><span class="dp">📁 {{ d.mountpoint }}</span><span class="ds">{{ d.used }} / {{ d.total }} ({{ d.percent }}%)</span></div>
+      <div class="db"><div class="dbf {% if d.percent>90 %}d{% endif %}" style="width:{{ d.percent }}%"></div></div>
     </div>
     {% endfor %}
     {% else %}
-    <div style="text-align:center;padding:20px 0;color:{% if theme == 'dark' %}rgba(255,255,255,0.3){% else %}rgba(0,0,0,0.3){% endif %};font-size:14px;">
-      💫 未检测到磁盘信息（Docker 环境可能需要挂载 /host）
-    </div>
+    <div style="text-align:center;padding:12px 0;color:{% if theme=='dark' %}rgba(255,255,255,0.25){% else %}rgba(0,0,0,0.25){% endif %};font-size:13px">暂无磁盘数据</div>
     {% endif %}
   </div>
 
-  <!-- ===== 5. 网络 ===== -->
+  <!-- NETWORK -->
   <div class="card">
-    <div class="card-title"><span>🌐</span>网络流量 Network</div>
-    <div class="net-legend">
-      <div class="net-legend-item"><span class="net-legend-dot" style="background:#00d2ff"></span> 下载 ↓ {{ net.download }}/s</div>
-      <div class="net-legend-item"><span class="net-legend-dot" style="background:#10b981"></span> 上传 ↑ {{ net.upload }}/s</div>
+    <div class="card-label">🌐 Network</div>
+    <div class="nl">
+      <div class="ni"><span class="nd" style="background:#007aff"></span> ↓ {{ net.download }}/s</div>
+      <div class="ni"><span class="nd" style="background:#34c759"></span> ↑ {{ net.upload }}/s</div>
     </div>
-    <div class="chart-wrapper">
-      <canvas id="netChart"></canvas>
-    </div>
+    <div class="cw"><canvas id="netC"></canvas></div>
   </div>
 
-  <!-- ===== 6. 系统信息 ===== -->
+  <!-- SYSTEM -->
   <div class="card">
-    <div class="card-title"><span>📋</span>系统信息</div>
-    <div class="sysinfo-grid">
-      <div class="sysinfo-item">
-        <span class="slabel">操作系统</span>
-        <span class="svalue">{{ sysinfo.os }}</span>
-      </div>
-      <div class="sysinfo-item">
-        <span class="slabel">内核版本</span>
-        <span class="svalue">{{ sysinfo.kernel }}</span>
-      </div>
-      <div class="sysinfo-item">
-        <span class="slabel">系统架构</span>
-        <span class="svalue">{{ sysinfo.arch }}</span>
-      </div>
-      <div class="sysinfo-item">
-        <span class="slabel">运行时间</span>
-        <span class="svalue">{{ sysinfo.uptime }}</span>
-      </div>
-      <div class="sysinfo-item">
-        <span class="slabel">Python 版本</span>
-        <span class="svalue">{{ sysinfo.python }}</span>
-      </div>
-      <div class="sysinfo-item">
-        <span class="slabel">主机名</span>
-        <span class="svalue">{{ hostname }}</span>
-      </div>
+    <div class="card-label">📋 System</div>
+    <div class="sg">
+      <div class="si"><span class="a">操作系统</span><span class="b">{{ sysinfo.os }}</span></div>
+      <div class="si"><span class="a">内核</span><span class="b">{{ sysinfo.kernel }}</span></div>
+      <div class="si"><span class="a">架构</span><span class="b">{{ sysinfo.arch }}</span></div>
+      <div class="si"><span class="a">运行时间</span><span class="b">{{ sysinfo.uptime }}</span></div>
+      <div class="si"><span class="a">Python</span><span class="b">{{ sysinfo.python }}</span></div>
+      <div class="si"><span class="a">主机名</span><span class="b">{{ hostname }}</span></div>
     </div>
   </div>
 
 </div>
 
 <script>
-// ===== 折线图绘制引擎 =====
-function drawLineChart(canvasId, data, color, fillColor, maxVal, unit) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  const w = rect.width;
-  const h = canvas.parentElement.classList.contains('chart-sm') ? 140 : 160;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  const pad = { top: 10, bottom: 24, left: 6, right: 4 };
-  const cw = w - pad.left - pad.right;
-  const ch = h - pad.top - pad.bottom;
-
-  if (!data || data.length < 2) {
-    ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}';
-    ctx.font = '15px -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('数据采集中...', w/2, h/2);
-    return;
+function draw(id,data,color,maxv){
+  const c=document.getElementById(id);if(!c)return
+  const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
+  const w=r.width,h=100
+  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
+  const pt={t:12,b:20,l:0,r:0},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  if(!data||data.length<2){
+    ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
+    ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center'
+    ctx.fillText('采集数据不足',w/2,h/2);return
   }
-
-  const values = data.map(v => Math.min(v, maxVal));
-  const maxV = maxVal;
-
-  function toX(i) { return pad.left + (i / (data.length - 1)) * cw; }
-  function toY(v) { return pad.top + ch - (v / maxV) * ch; }
-
-  // 网格线
-  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.05){% else %}rgba(0,0,0,0.06){% endif %}';
-  ctx.lineWidth = 1;
-  for (let g = 0; g <= 4; g++) {
-    const gy = pad.top + (g/4) * ch;
-    ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(pad.left + cw, gy); ctx.stroke();
-    ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-    ctx.font = '10px -apple-system, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(Math.round(maxV - (g/4)*maxV) + (unit||'%'), pad.left - 2, gy + 3);
-  }
-
-  // 时间标签
-  const labels = {{ timestamps | safe }};
-  const n = data.length;
-  const labelStep = Math.max(1, Math.floor(n / 6));
-  ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-  ctx.font = '10px -apple-system, sans-serif';
-  ctx.textAlign = 'center';
-  for (let i = 0; i < n; i += labelStep) {
-    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 14);
-  }
-
-  // 填充渐变
-  ctx.beginPath();
-  ctx.moveTo(toX(0), toY(values[0]));
-  for (let i = 1; i < values.length; i++) ctx.lineTo(toX(i), toY(values[i]));
-  ctx.lineTo(toX(values.length-1), pad.top + ch);
-  ctx.lineTo(toX(0), pad.top + ch);
-  ctx.closePath();
-  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
-  grad.addColorStop(0, fillColor);
-  grad.addColorStop(1, fillColor.replace('0.3','0.02'));
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // 折线
-  ctx.beginPath();
-  ctx.moveTo(toX(0), toY(values[0]));
-  for (let i = 1; i < values.length; i++) ctx.lineTo(toX(i), toY(values[i]));
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2.5;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  ctx.stroke();
-
-  // 高亮点
-  for (let i = 0; i < values.length; i++) {
-    ctx.beginPath();
-    ctx.arc(toX(i), toY(values[i]), 2.5, 0, Math.PI*2);
-    ctx.fillStyle = color;
-    ctx.fill();
-  }
+  const vals=data.map(v=>Math.min(v,maxv)),mx=maxv
+  const tx=i=>pt.l+(i/(data.length-1))*cw,ty=v=>pt.t+ch-(v/mx)*ch
+  ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
+  for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
+  const labels={{ timestamps|safe }},n=data.length,step=Math.max(1,Math.floor(n/6))
+  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.15){% endif %}';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center'
+  for(let i=0;i<n;i+=step)ctx.fillText(labels[i]||'',tx(i),pt.t+ch+14)
+  ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
+  for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
+  ctx.lineTo(tx(vals.length-1),pt.t+ch);ctx.lineTo(tx(0),pt.t+ch);ctx.closePath()
+  const g=ctx.createLinearGradient(0,pt.t,0,pt.t+ch)
+  g.addColorStop(0,color+'40');g.addColorStop(1,color+'08')
+  ctx.fillStyle=g;ctx.fill()
+  ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
+  for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()
 }
-
-// ===== 数据准备 =====
-const cpuData = {{ cpu.data | safe }};
-const memData = {{ mem.data | safe }};
-const swapData = {{ swap.data | safe }};
-const netDown = {{ net.down_data | safe }};
-const netUp = {{ net.up_data | safe }};
-{% if gpu %}const gpuData = {{ gpu.data | safe }};{% endif %}
-
-const cpuMax = Math.max(...cpuData, 100);
-const memMax = Math.max(...memData, 100);
-const swapMax = Math.max(...swapData, 100);
-const netMax = Math.max(...netDown, ...netUp, 1);
-
-drawLineChart('cpuChart', cpuData, '#00d2ff', 'rgba(0,210,255,0.3)', cpuMax, '%');
-drawLineChart('memChart', memData, '#7c3aed', 'rgba(124,58,237,0.3)', memMax, '%');
-{% if gpu %}drawLineChart('gpuChart', gpuData, '#10b981', 'rgba(16,185,129,0.3)', gpuMax, '%');{% endif %}
-
-// 网络双线
-(function() {
-  const canvas = document.getElementById('netChart');
-  if (!canvas) return;
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  const w = rect.width;
-  const h = 160;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  const pad = { top: 10, bottom: 24, left: 6, right: 4 };
-  const cw = w - pad.left - pad.right;
-  const ch = h - pad.top - pad.bottom;
-
-  if (netDown.length < 2) {
-    ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}';
-    ctx.font = '15px -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('等待数据采集...', w/2, h/2);
-    return;
+const cpuD={{ cpu.data|safe }},memD={{ mem.data|safe }}
+{% if gpu %}const gpuD={{ gpu.data|safe }};{% endif %}
+const netD={{ net.down_data|safe }},netU={{ net.up_data|safe }}
+draw('cpuC',cpuD,'#007aff',Math.max(...cpuD,100))
+draw('memC',memD,'#5856d6',Math.max(...memD,100))
+{% if gpu %}draw('gpuC',gpuD,'#34c759',Math.max(...gpuD,100));{% endif %}
+(function(){
+  const c=document.getElementById('netC');if(!c)return
+  const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
+  const w=r.width,h=100
+  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
+  const pt={t:12,b:20,l:0,r:0},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  if(netD.length<2){
+    ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
+    ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center'
+    ctx.fillText('等待数据采集',w/2,h/2);return
   }
-
-  const n = netDown.length;
-  function toX(i) { return pad.left + (i / (n - 1)) * cw; }
-  function toY(v) { return pad.top + ch - (v / netMax) * ch; }
-
-  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.05){% else %}rgba(0,0,0,0.06){% endif %}';
-  ctx.lineWidth = 1;
-  for (let g = 0; g <= 4; g++) {
-    const gy = pad.top + (g/4) * ch;
-    ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(pad.left + cw, gy); ctx.stroke();
-  }
-  const labels = {{ timestamps | safe }};
-  const labelStep = Math.max(1, Math.floor(n / 6));
-  ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-  ctx.font = '10px -apple-system, sans-serif';
-  ctx.textAlign = 'center';
-  for (let i = 0; i < n; i += labelStep) {
-    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 14);
-  }
-  function drawLine(data, style) {
-    ctx.beginPath();
-    ctx.moveTo(toX(0), toY(data[0]));
-    for (let i = 1; i < data.length; i++) ctx.lineTo(toX(i), toY(data[i]));
-    ctx.strokeStyle = style;
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.stroke();
-  }
-  drawLine(netDown, '#00d2ff');
-  drawLine(netUp, '#10b981');
-})();
+  const n=netD.length,mx=Math.max(...netD,...netU,1)
+  const tx=i=>pt.l+(i/(n-1))*cw,ty=v=>pt.t+ch-(v/mx)*ch
+  ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
+  for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
+  const lb={{ timestamps|safe }},step=Math.max(1,Math.floor(n/6))
+  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.15){% endif %}';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center'
+  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+14)
+  function dr(d,s){ctx.beginPath();ctx.moveTo(tx(0),ty(d[0]));for(let i=1;i<d.length;i++)ctx.lineTo(tx(i),ty(d[i]));ctx.strokeStyle=s;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
+  dr(netD,'#007aff');dr(netU,'#34c759')
+})()
 </script>
 </body>
 </html>
