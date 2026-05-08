@@ -497,10 +497,18 @@ class ServerStatusPlugin(Star):
 
     @staticmethod
     def _get_disks_docker_friendly():
+        """获取磁盘信息，兼容 Docker Desktop on Windows（overlay文件系统）"""
         disks = []
         seen = set()
+        # 只跳过明显是虚拟/伪文件系统的类型，保留 overlay（Docker Desktop）
+        skip_fs = ("proc","sysfs","devtmpfs","devpts","tmpfs","fusectl",
+                   "cgroup_root","cgroup","debugfs","securityfs","pstore",
+                   "bpf","autofs","mqueue","hugetlbfs","configfs","efivarfs")
         for part in psutil.disk_partitions():
-            if part.fstype in ("proc","sysfs","devtmpfs","devpts","tmpfs","fusectl","cgroup_root","cgroup","debugfs","securityfs","pstore","bpf","autofs","mqueue","hugetlbfs","configfs","efivarfs","overlay"):
+            if part.fstype in skip_fs:
+                continue
+            # 跳过 /dev 下的各种虚拟设备，但保留 overlay 和真实磁盘
+            if part.fstype in ("squashfs", "ramfs"):
                 continue
             key = f"{part.device}:{part.mountpoint}"
             if key in seen:
@@ -515,6 +523,9 @@ class ServerStatusPlugin(Star):
                 })
             except (PermissionError, OSError):
                 continue
+
+        # 排序：/ 在第一个，然后按挂载点字母序
+        disks.sort(key=lambda d: (0 if d["mountpoint"] == "/" else 1, d["mountpoint"]))
         return disks
 
     @filter.command("checkstatus")
