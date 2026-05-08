@@ -24,7 +24,7 @@
   "enable_gpu_monitor": {
     "type": "bool",
     "description": "启用GPU监控",
-    "hint": "是否检测并采集NVIDIA GPU信息（使用pynvml）。如未安装NVIDIA驱动会自动跳过",
+    "hint": "是否检测并采集NVIDIA GPU信息（支持pynvml和nvidia-smi两种方式）。如未安装NVIDIA驱动会自动跳过",
     "default": true
   },
   "enable_temperature_monitor": {
@@ -36,8 +36,20 @@
   "theme_mode": {
     "type": "string",
     "description": "主题模式",
-    "hint": "状态卡片图的配色风格",
+    "hint": "dark=始终深色, light=始终浅色, auto=根据设定时间自动切换",
     "default": "dark",
-    "options": ["dark", "light"]
+    "options": ["dark", "light", "auto"]
+  },
+  "theme_switch_light_time": {
+    "type": "string",
+    "description": "切换到浅色模式的时间",
+    "hint": "theme_mode设为auto时生效。格式 HH:MM，到该时间自动切换为浅色主题",
+    "default": "06:00"
+  },
+  "theme_switch_dark_time": {
+    "type": "string",
+    "description": "切回到深色模式的时间",
+    "hint": "theme_mode设为auto时生效。格式 HH:MM，到该时间自动切换为深色主题",
+    "default": "18:00"
   }
 }

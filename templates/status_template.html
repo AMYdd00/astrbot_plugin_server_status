@@ -7,79 +7,81 @@
 <style>
   /* ===== Apple PPT 风格 - 磨砂玻璃 + 渐变 ===== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
     width: 840px;
-    padding: 32px;
-    background: {% if theme == 'dark' %}linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%){% else %}linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 50%, #eef1f5 100%){% endif %};
+    padding: 36px;
+    background: {% if theme == 'dark' %}linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%){% else %}linear-gradient(135deg, #f0f2f5 0%, #e8ecf2 40%, #f5f7fa 100%){% endif %};
     color: {% if theme == 'dark' %}#ffffff{% else %}#1a1a2e{% endif %};
     min-height: 100%;
   }
 
   .container {
-    max-width: 776px;
+    max-width: 768px;
     margin: 0 auto;
   }
 
   /* ===== 顶部标题 ===== */
   .header {
     text-align: center;
-    padding: 28px 24px 20px;
-    margin-bottom: 24px;
-    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.7){% endif %};
+    padding: 32px 28px 22px;
+    margin-bottom: 28px;
+    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.85){% endif %};
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border-radius: 24px;
-    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.5){% endif %};
+    border-radius: 28px;
+    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.6){% endif %};
     box-shadow: 0 8px 32px {% if theme == 'dark' %}rgba(0,0,0,0.3){% else %}rgba(0,0,0,0.06){% endif %};
   }
-  .header-icon { font-size: 36px; margin-bottom: 8px; }
+  .header-icon { font-size: 42px; margin-bottom: 10px; }
   .header h1 {
-    font-size: 24px; font-weight: 700;
+    font-size: 28px; font-weight: 700;
     background: linear-gradient(135deg, #00d2ff, #7c3aed, #10b981);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
   }
   .header .subtitle {
-    font-size: 13px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.5){% endif %};
-    margin-top: 6px;
+    font-size: 14px;
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.45){% endif %};
+    margin-top: 8px;
   }
   .header .hostname {
-    font-size: 14px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.7){% else %}rgba(0,0,0,0.6){% endif %};
-    margin-top: 4px;
+    font-size: 16px;
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.75){% else %}rgba(0,0,0,0.6){% endif %};
+    margin-top: 6px;
     font-weight: 500;
   }
 
   /* ===== 磨砂玻璃卡片 ===== */
   .card {
-    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.7){% endif %};
+    background: {% if theme == 'dark' %}rgba(255,255,255,0.06){% else %}rgba(255,255,255,0.85){% endif %};
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border-radius: 20px;
-    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.5){% endif %};
+    border-radius: 24px;
+    border: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(255,255,255,0.6){% endif %};
     box-shadow: 0 4px 24px {% if theme == 'dark' %}rgba(0,0,0,0.2){% else %}rgba(0,0,0,0.04){% endif %};
-    padding: 20px 24px;
-    margin-bottom: 16px;
-    transition: all 0.2s;
+    padding: 24px 28px;
+    margin-bottom: 20px;
   }
   .card-title {
-    font-size: 14px; font-weight: 600;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.5){% endif %};
-    text-transform: uppercase; letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    font-size: 16px; font-weight: 600;
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.45){% endif %};
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 16px;
   }
-  .card-title span { margin-right: 6px; }
+  .card-title span { margin-right: 8px; }
 
   /* ===== 图表区域 ===== */
   .chart-wrapper {
     position: relative;
     width: 100%;
-    height: 120px;
-    margin: 8px 0 4px;
+    height: 160px;
+    margin: 12px 0 6px;
+  }
+  .chart-wrapper.chart-sm {
+    height: 140px;
   }
   .chart-wrapper canvas {
     width: 100%;
@@ -92,66 +94,94 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
     flex-wrap: wrap;
   }
   .stat-item {
-    font-size: 13px;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.8){% else %}rgba(0,0,0,0.7){% endif %};
+    font-size: 14px;
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.85){% else %}rgba(0,0,0,0.75){% endif %};
   }
   .stat-item .label {
     color: {% if theme == 'dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};
-    font-size: 11px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
   }
   .stat-item .value {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
   }
-  .stat-item .value.good { color: #10b981; }
-  .stat-item .value.warn { color: #f59e0b; }
-  .stat-item .value.danger { color: #ef4444; }
+  .stat-item .value.num-good { color: #10b981; }
+  .stat-item .value.num-warn { color: #f59e0b; }
+  .stat-item .value.num-danger { color: #ef4444; }
 
   /* ===== 温度标签 ===== */
   .temp-tag {
     display: inline-block;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 3px 14px;
+    border-radius: 24px;
+    font-size: 14px;
     font-weight: 600;
   }
   .temp-tag.cool { background: rgba(16,185,129,0.15); color: #10b981; }
   .temp-tag.warm { background: rgba(245,158,11,0.15); color: #f59e0b; }
   .temp-tag.hot  { background: rgba(239,68,68,0.15); color: #ef4444; }
 
+  /* ===== 内存+Swap 双列布局 ===== */
+  .dual-panel {
+    display: flex;
+    gap: 0;
+  }
+  .dual-panel .panel-main {
+    flex: 2;
+    padding-right: 20px;
+    border-right: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.08){% else %}1px solid rgba(0,0,0,0.06){% endif %};
+  }
+  .dual-panel .panel-side {
+    flex: 1;
+    padding-left: 20px;
+  }
+  .panel-side .stat-item {
+    margin-bottom: 8px;
+  }
+  .panel-side .stat-item:last-child {
+    margin-bottom: 0;
+  }
+  .panel-subtitle {
+    font-size: 12px;
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %};
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
   /* ===== 进度条（硬盘用） ===== */
   .disk-item {
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
   .disk-item:last-child { margin-bottom: 0; }
   .disk-header {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 4px;
+    font-size: 14px;
+    margin-bottom: 6px;
   }
   .disk-path {
     font-weight: 600;
-    color: {% if theme == 'dark' %}rgba(255,255,255,0.8){% else %}rgba(0,0,0,0.7){% endif %};
+    color: {% if theme == 'dark' %}rgba(255,255,255,0.85){% else %}rgba(0,0,0,0.75){% endif %};
   }
   .disk-detail {
     color: {% if theme == 'dark' %}rgba(255,255,255,0.5){% else %}rgba(0,0,0,0.5){% endif %};
-    font-size: 12px;
+    font-size: 13px;
   }
   .disk-bar {
-    height: 6px;
+    height: 8px;
     background: {% if theme == 'dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.08){% endif %};
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
   }
   .disk-bar-fill {
     height: 100%;
-    border-radius: 3px;
-    transition: width 0.3s;
+    border-radius: 4px;
     background: linear-gradient(90deg, #10b981, #f59e0b);
   }
   .disk-bar-fill.danger { background: linear-gradient(90deg, #f59e0b, #ef4444); }
@@ -160,13 +190,13 @@
   .sysinfo-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px 24px;
+    gap: 10px 28px;
   }
   .sysinfo-item {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    padding: 4px 0;
+    font-size: 14px;
+    padding: 6px 0;
     border-bottom: {% if theme == 'dark' %}1px solid rgba(255,255,255,0.04){% else %}1px solid rgba(0,0,0,0.04){% endif %};
   }
   .sysinfo-item .slabel {
@@ -177,29 +207,22 @@
     text-align: right;
   }
 
-  /* ===== 网络双折线图 ===== */
+  /* ===== 网络图例 ===== */
   .net-legend {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     justify-content: center;
-    margin-bottom: 4px;
-    font-size: 12px;
+    margin-bottom: 6px;
+    font-size: 13px;
   }
   .net-legend-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
   }
   .net-legend-dot {
-    width: 8px; height: 8px; border-radius: 50%;
+    width: 10px; height: 10px; border-radius: 50%;
     display: inline-block;
-  }
-
-  /* ===== Swap 简洁 ===== */
-  .swap-stats {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
   }
 </style>
 </head>
@@ -211,7 +234,7 @@
     <div class="header-icon">📊</div>
     <h1>服务器状态监控</h1>
     <div class="hostname">{{ hostname }}</div>
-    <div class="subtitle">📅 {{ time_range }}</div>
+    <div class="subtitle">📅 {{ time_range }} {% if sysinfo.is_docker %}| 🐳 Docker{% endif %}</div>
   </div>
 
   <!-- ===== 1. CPU ===== -->
@@ -232,7 +255,7 @@
       </div>
       <div class="stat-item">
         <span class="label">当前</span><br>
-        <span class="value {% if cpu.current > 80 %}danger{% elif cpu.current > 60 %}warn{% else %}good{% endif %}">{{ cpu.current }}%</span>
+        <span class="value {% if cpu.current > 80 %}num-danger{% elif cpu.current > 60 %}num-warn{% else %}num-good{% endif %}">{{ cpu.current }}%</span>
       </div>
       <div class="stat-item">
         <span class="label">平均 / 峰值</span><br>
@@ -250,25 +273,47 @@
     </div>
   </div>
 
-  <!-- ===== 2. 内存 ===== -->
+  <!-- ===== 2. 内存 + Swap（合并一行） ===== -->
   <div class="card">
-    <div class="card-title"><span>💾</span>内存 Memory</div>
-    <div class="stats-row">
-      <div class="stat-item">
-        <span class="label">总量</span><br>
-        <span class="value">{{ mem.total }}</span>
+    <div class="card-title"><span>💾</span>内存 & 交换分区</div>
+    <div class="dual-panel">
+      <!-- 左侧 2/3 内存 -->
+      <div class="panel-main">
+        <div class="panel-subtitle">Memory 内存</div>
+        <div class="stats-row" style="margin-bottom:4px;">
+          <div class="stat-item">
+            <span class="label">总量</span><br>
+            <span class="value">{{ mem.total }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">已用</span><br>
+            <span class="value {% if mem.percent > 90 %}num-danger{% elif mem.percent > 75 %}num-warn{% else %}num-good{% endif %}">{{ mem.used }} ({{ mem.percent }}%)</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">可用</span><br>
+            <span class="value">{{ mem.available }}</span>
+          </div>
+        </div>
+        <div class="chart-wrapper chart-sm">
+          <canvas id="memChart"></canvas>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="label">已用</span><br>
-        <span class="value {% if mem.percent > 90 %}danger{% elif mem.percent > 75 %}warn{% else %}good{% endif %}">{{ mem.used }} ({{ mem.percent }}%)</span>
+      <!-- 右侧 1/3 Swap -->
+      <div class="panel-side">
+        <div class="panel-subtitle">Swap 交换</div>
+        <div class="stat-item">
+          <span class="label">总量</span><br>
+          <span class="value">{{ swap.total }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">已用</span><br>
+          <span class="value {% if swap.percent > 50 %}num-danger{% elif swap.percent > 30 %}num-warn{% else %}num-good{% endif %}">{{ swap.used }} ({{ swap.percent }}%)</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">空闲</span><br>
+          <span class="value">{{ swap.free }}</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="label">可用</span><br>
-        <span class="value">{{ mem.available }}</span>
-      </div>
-    </div>
-    <div class="chart-wrapper">
-      <canvas id="memChart"></canvas>
     </div>
   </div>
 
@@ -287,7 +332,7 @@
       </div>
       <div class="stat-item">
         <span class="label">核心使用率</span><br>
-        <span class="value {% if gpu.percent > 80 %}danger{% elif gpu.percent > 60 %}warn{% else %}good{% endif %}">{{ gpu.percent }}%</span>
+        <span class="value {% if gpu.percent > 80 %}num-danger{% elif gpu.percent > 60 %}num-warn{% else %}num-good{% endif %}">{{ gpu.percent }}%</span>
       </div>
       {% if gpu.temp %}
       <div class="stat-item">
@@ -302,28 +347,10 @@
   </div>
   {% endif %}
 
-  <!-- ===== 4. Swap ===== -->
-  <div class="card">
-    <div class="card-title"><span>🔄</span>交换分区 Swap</div>
-    <div class="swap-stats">
-      <div class="stat-item">
-        <span class="label">总量</span><br>
-        <span class="value">{{ swap.total }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">已用</span><br>
-        <span class="value {% if swap.percent > 50 %}danger{% elif swap.percent > 30 %}warn{% else %}good{% endif %}">{{ swap.used }} ({{ swap.percent }}%)</span>
-      </div>
-      <div class="stat-item">
-        <span class="label">空闲</span><br>
-        <span class="value">{{ swap.free }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== 5. 存储 ===== -->
+  <!-- ===== 4. 存储 ===== -->
   <div class="card">
     <div class="card-title"><span>💽</span>存储设备 Storage</div>
+    {% if disks %}
     {% for disk in disks %}
     <div class="disk-item">
       <div class="disk-header">
@@ -335,9 +362,14 @@
       </div>
     </div>
     {% endfor %}
+    {% else %}
+    <div style="text-align:center;padding:20px 0;color:{% if theme == 'dark' %}rgba(255,255,255,0.3){% else %}rgba(0,0,0,0.3){% endif %};font-size:14px;">
+      💫 未检测到磁盘信息（Docker 环境可能需要挂载 /host）
+    </div>
+    {% endif %}
   </div>
 
-  <!-- ===== 6. 网络 ===== -->
+  <!-- ===== 5. 网络 ===== -->
   <div class="card">
     <div class="card-title"><span>🌐</span>网络流量 Network</div>
     <div class="net-legend">
@@ -349,7 +381,7 @@
     </div>
   </div>
 
-  <!-- ===== 7. 系统信息 ===== -->
+  <!-- ===== 6. 系统信息 ===== -->
   <div class="card">
     <div class="card-title"><span>📋</span>系统信息</div>
     <div class="sysinfo-grid">
@@ -383,14 +415,14 @@
 </div>
 
 <script>
-// ===== 折线图绘制引擎 (类任务管理器风格) =====
+// ===== 折线图绘制引擎 =====
 function drawLineChart(canvasId, data, color, fillColor, maxVal, unit) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const rect = canvas.parentElement.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   const w = rect.width;
-  const h = 120;
+  const h = canvas.parentElement.classList.contains('chart-sm') ? 140 : 160;
   canvas.width = w * dpr;
   canvas.height = h * dpr;
   canvas.style.width = w + 'px';
@@ -398,74 +430,64 @@ function drawLineChart(canvasId, data, color, fillColor, maxVal, unit) {
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
-  const pad = { top: 8, bottom: 20, left: 4, right: 4 };
+  const pad = { top: 10, bottom: 24, left: 6, right: 4 };
   const cw = w - pad.left - pad.right;
   const ch = h - pad.top - pad.bottom;
 
   if (!data || data.length < 2) {
     ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}';
-    ctx.font = '13px -apple-system, sans-serif';
+    ctx.font = '15px -apple-system, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('等待数据采集...', w/2, h/2);
+    ctx.fillText('数据采集中...', w/2, h/2);
     return;
   }
 
-  // 归一化
   const values = data.map(v => Math.min(v, maxVal));
-  const minV = 0;
   const maxV = maxVal;
 
   function toX(i) { return pad.left + (i / (data.length - 1)) * cw; }
-  function toY(v) { return pad.top + ch - ((v - minV) / (maxV - minV)) * ch; }
+  function toY(v) { return pad.top + ch - (v / maxV) * ch; }
 
   // 网格线
-  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.06){% endif %}';
+  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.05){% else %}rgba(0,0,0,0.06){% endif %}';
   ctx.lineWidth = 1;
   for (let g = 0; g <= 4; g++) {
     const gy = pad.top + (g/4) * ch;
-    ctx.beginPath();
-    ctx.moveTo(pad.left, gy);
-    ctx.lineTo(pad.left + cw, gy);
-    ctx.stroke();
-    // 刻度标签
+    ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(pad.left + cw, gy); ctx.stroke();
     ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-    ctx.font = '9px -apple-system, sans-serif';
+    ctx.font = '10px -apple-system, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText(Math.round(maxV - (g/4)*maxV) + (unit||'%'), pad.left - 2, gy + 3);
   }
 
   // 时间标签
-  const n = data.length;
   const labels = {{ timestamps | safe }};
+  const n = data.length;
   const labelStep = Math.max(1, Math.floor(n / 6));
   ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-  ctx.font = '9px -apple-system, sans-serif';
+  ctx.font = '10px -apple-system, sans-serif';
   ctx.textAlign = 'center';
   for (let i = 0; i < n; i += labelStep) {
-    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 12);
+    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 14);
   }
 
-  // 填充区域
+  // 填充渐变
   ctx.beginPath();
   ctx.moveTo(toX(0), toY(values[0]));
-  for (let i = 1; i < values.length; i++) {
-    ctx.lineTo(toX(i), toY(values[i]));
-  }
+  for (let i = 1; i < values.length; i++) ctx.lineTo(toX(i), toY(values[i]));
   ctx.lineTo(toX(values.length-1), pad.top + ch);
   ctx.lineTo(toX(0), pad.top + ch);
   ctx.closePath();
   const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
-  grad.addColorStop(0, fillColor || (color + '40'));
-  grad.addColorStop(1, fillColor ? fillColor.replace('0.3','0.02') : (color + '08'));
+  grad.addColorStop(0, fillColor);
+  grad.addColorStop(1, fillColor.replace('0.3','0.02'));
   ctx.fillStyle = grad;
   ctx.fill();
 
   // 折线
   ctx.beginPath();
   ctx.moveTo(toX(0), toY(values[0]));
-  for (let i = 1; i < values.length; i++) {
-    ctx.lineTo(toX(i), toY(values[i]));
-  }
+  for (let i = 1; i < values.length; i++) ctx.lineTo(toX(i), toY(values[i]));
   ctx.strokeStyle = color;
   ctx.lineWidth = 2.5;
   ctx.lineJoin = 'round';
@@ -475,7 +497,7 @@ function drawLineChart(canvasId, data, color, fillColor, maxVal, unit) {
   // 高亮点
   for (let i = 0; i < values.length; i++) {
     ctx.beginPath();
-    ctx.arc(toX(i), toY(values[i]), 2, 0, Math.PI*2);
+    ctx.arc(toX(i), toY(values[i]), 2.5, 0, Math.PI*2);
     ctx.fillStyle = color;
     ctx.fill();
   }
@@ -484,29 +506,28 @@ function drawLineChart(canvasId, data, color, fillColor, maxVal, unit) {
 // ===== 数据准备 =====
 const cpuData = {{ cpu.data | safe }};
 const memData = {{ mem.data | safe }};
-{% if gpu %}const gpuData = {{ gpu.data | safe }};{% endif %}
+const swapData = {{ swap.data | safe }};
 const netDown = {{ net.down_data | safe }};
 const netUp = {{ net.up_data | safe }};
+{% if gpu %}const gpuData = {{ gpu.data | safe }};{% endif %}
 
-// 计算最大值
 const cpuMax = Math.max(...cpuData, 100);
 const memMax = Math.max(...memData, 100);
-{% if gpu %}const gpuMax = Math.max(...gpuData, 100);{% endif %}
+const swapMax = Math.max(...swapData, 100);
 const netMax = Math.max(...netDown, ...netUp, 1);
 
-// 绘制
 drawLineChart('cpuChart', cpuData, '#00d2ff', 'rgba(0,210,255,0.3)', cpuMax, '%');
 drawLineChart('memChart', memData, '#7c3aed', 'rgba(124,58,237,0.3)', memMax, '%');
 {% if gpu %}drawLineChart('gpuChart', gpuData, '#10b981', 'rgba(16,185,129,0.3)', gpuMax, '%');{% endif %}
 
-// 网络（双线）
+// 网络双线
 (function() {
   const canvas = document.getElementById('netChart');
   if (!canvas) return;
   const rect = canvas.parentElement.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   const w = rect.width;
-  const h = 120;
+  const h = 160;
   canvas.width = w * dpr;
   canvas.height = h * dpr;
   canvas.style.width = w + 'px';
@@ -514,13 +535,13 @@ drawLineChart('memChart', memData, '#7c3aed', 'rgba(124,58,237,0.3)', memMax, '%
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
-  const pad = { top: 8, bottom: 20, left: 4, right: 4 };
+  const pad = { top: 10, bottom: 24, left: 6, right: 4 };
   const cw = w - pad.left - pad.right;
   const ch = h - pad.top - pad.bottom;
 
   if (netDown.length < 2) {
     ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}';
-    ctx.font = '13px -apple-system, sans-serif';
+    ctx.font = '15px -apple-system, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('等待数据采集...', w/2, h/2);
     return;
@@ -530,32 +551,25 @@ drawLineChart('memChart', memData, '#7c3aed', 'rgba(124,58,237,0.3)', memMax, '%
   function toX(i) { return pad.left + (i / (n - 1)) * cw; }
   function toY(v) { return pad.top + ch - (v / netMax) * ch; }
 
-  // 网格
-  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.06){% endif %}';
+  ctx.strokeStyle = '{% if theme == "dark" %}rgba(255,255,255,0.05){% else %}rgba(0,0,0,0.06){% endif %}';
   ctx.lineWidth = 1;
   for (let g = 0; g <= 4; g++) {
     const gy = pad.top + (g/4) * ch;
     ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(pad.left + cw, gy); ctx.stroke();
   }
-
-  // 时间标签
   const labels = {{ timestamps | safe }};
   const labelStep = Math.max(1, Math.floor(n / 6));
   ctx.fillStyle = '{% if theme == "dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';
-  ctx.font = '9px -apple-system, sans-serif';
+  ctx.font = '10px -apple-system, sans-serif';
   ctx.textAlign = 'center';
   for (let i = 0; i < n; i += labelStep) {
-    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 12);
+    ctx.fillText(labels[i] || '', toX(i), pad.top + ch + 14);
   }
-
-  // 绘制双线
-  function drawLine(data, color) {
+  function drawLine(data, style) {
     ctx.beginPath();
     ctx.moveTo(toX(0), toY(data[0]));
-    for (let i = 1; i < data.length; i++) {
-      ctx.lineTo(toX(i), toY(data[i]));
-    }
-    ctx.strokeStyle = color;
+    for (let i = 1; i < data.length; i++) ctx.lineTo(toX(i), toY(data[i]));
+    ctx.strokeStyle = style;
     ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
