@@ -203,16 +203,16 @@ class ServerStatusPlugin(Star):
             self._nvml_init = True
         except Exception:
             pass
-        if _IS_DOCKER:
-            try:
-                res = subprocess.run(["nvidia-smi","--query-gpu=index,name","--format=csv,noheader"], capture_output=True, text=True, timeout=10)
-                if res.returncode == 0 and res.stdout.strip():
-                    self._gpu_available = True
-                    self._gpu_via_smi = True
-                    self.logger.info("GPU监控已初始化 (nvidia-smi)")
-                    return
-            except Exception:
-                pass
+        # 在所有平台尝试 nvidia-smi（支持 Docker Desktop on Windows WSL2 后端）
+        try:
+            res = subprocess.run(["nvidia-smi","--query-gpu=index,name","--format=csv,noheader"], capture_output=True, text=True, timeout=10)
+            if res.returncode == 0 and res.stdout.strip():
+                self._gpu_available = True
+                self._gpu_via_smi = True
+                self.logger.info("GPU监控已初始化 (nvidia-smi)")
+                return
+        except Exception:
+            pass
         self._gpu_available = False
         self.logger.info("未检测到NVIDIA GPU")
 
