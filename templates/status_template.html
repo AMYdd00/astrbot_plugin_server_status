@@ -15,86 +15,62 @@ body{
   line-height:1.4
 }
 .container{max-width:640px;margin:0 auto;padding:48px 40px}
-
-/* Header */
 .header{margin-bottom:40px}
 .header h1{
-  font-size:34px;font-weight:700;letter-spacing:-0.5px;
+  font-size:36px;font-weight:700;letter-spacing:-0.5px;
   background:linear-gradient(135deg,#007aff,#5856d6,#34c759);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:4px
 }
-.header .host{font-size:15px;color:{% if theme=='dark' %}rgba(255,255,255,0.55){% else %}rgba(0,0,0,0.5){% endif %};font-weight:400;margin-bottom:2px}
-.header .meta{font-size:13px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
-
-/* Cards */
+.header .host{font-size:16px;color:{% if theme=='dark' %}rgba(255,255,255,0.55){% else %}rgba(0,0,0,0.5){% endif %};font-weight:400;margin-bottom:2px}
+.header .meta{font-size:14px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
 .card{
   background:{% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(255,255,255,0.9){% endif %};
-  border-radius:16px;
-  padding:24px;
-  margin-bottom:16px;
+  border-radius:16px;padding:28px;margin-bottom:16px;
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   border:{% if theme=='dark' %}1px solid rgba(255,255,255,0.12){% else %}1px solid rgba(0,0,0,0.06){% endif %}
 }
 .card-label{
-  font-size:11px;font-weight:600;letter-spacing:2px;
+  font-size:12px;font-weight:600;letter-spacing:2px;
   color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.3){% endif %};
-  text-transform:uppercase;margin-bottom:12px
+  text-transform:uppercase;margin-bottom:14px
 }
-
-/* Data row */
-.row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:6px}
-.col{font-size:13px}
-.col .l{font-size:11px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
-.col .v{font-size:16px;font-weight:600}
-.col .v.g{color:#34c759}
-.col .v.w{color:#ff9500}
-.col .v.d{color:#ff3b30}
-
-/* Temp tag */
-.temp{display:inline-block;padding:2px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.row{display:flex;align-items:baseline;gap:24px;flex-wrap:wrap;margin-bottom:6px}
+.col{font-size:14px}
+.col .l{font-size:12px;color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
+.col .v{font-size:18px;font-weight:600}
+.col .v.g{color:#34c759}.col .v.w{color:#ff9500}.col .v.d{color:#ff3b30}
+.temp{display:inline-block;padding:3px 14px;border-radius:20px;font-size:14px;font-weight:600}
 .temp.c{background:rgba(52,199,89,0.15);color:#34c759}
 .temp.w{background:rgba(255,149,0,0.15);color:#ff9500}
 .temp.h{background:rgba(255,59,48,0.15);color:#ff3b30}
-
-/* Chart */
-.cw{width:100%;height:100px;margin:10px 0 0}
+.cw{width:100%;height:100px;margin:12px 0 0}
 .cw canvas{width:100%;height:100%;display:block}
-
-/* Dual panel */
 .dual{display:flex;gap:0}
 .dual .m{flex:2;padding-right:16px;border-right:1px solid {% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.06){% endif %}}
 .dual .s{flex:1;padding-left:16px}
 .dual .s .col{margin-bottom:8px}
 .dual .s .col:last-child{margin-bottom:0}
-.st{font-size:10px;letter-spacing:1.5px;color:{% if theme=='dark' %}rgba(255,255,255,0.25){% else %}rgba(0,0,0,0.25){% endif %};text-transform:uppercase;margin-bottom:8px}
-
-/* Disk */
+.st{font-size:11px;letter-spacing:1.5px;color:{% if theme=='dark' %}rgba(255,255,255,0.25){% else %}rgba(0,0,0,0.25){% endif %};text-transform:uppercase;margin-bottom:8px}
 .dk{margin-bottom:10px}
 .dk:last-child{margin-bottom:0}
-.dh{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.dh{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
 .dp{font-weight:600}
-.ds{color:{% if theme=='dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};font-size:12px}
+.ds{color:{% if theme=='dark' %}rgba(255,255,255,0.4){% else %}rgba(0,0,0,0.4){% endif %};font-size:13px}
 .db{height:4px;background:{% if theme=='dark' %}rgba(255,255,255,0.08){% else %}rgba(0,0,0,0.06){% endif %};border-radius:2px;overflow:hidden}
 .dbf{height:100%;border-radius:2px;background:linear-gradient(90deg,#34c759,#ff9500)}
 .dbf.d{background:linear-gradient(90deg,#ff9500,#ff3b30)}
-
-/* Network legend */
-.nl{display:flex;gap:16px;justify-content:center;margin-bottom:4px;font-size:12px}
+.nl{display:flex;gap:16px;justify-content:center;margin-bottom:4px;font-size:13px}
 .ni{display:flex;align-items:center;gap:4px}
 .nd{width:8px;height:8px;border-radius:50%;display:inline-block}
-
-/* Sysinfo grid */
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}
-.si{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid {% if theme=='dark' %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.04){% endif %}}
+.si{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:1px solid {% if theme=='dark' %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.04){% endif %}}
 .si .a{color:{% if theme=='dark' %}rgba(255,255,255,0.35){% else %}rgba(0,0,0,0.35){% endif %}}
 .si .b{font-weight:500;text-align:right}
 </style>
 </head>
 <body>
 <div class="container">
-
-  <!-- HEADER -->
   <div class="header">
     <div class="host">{{ hostname }}</div>
     <h1>Server Status</h1>
@@ -192,64 +168,77 @@ body{
       <div class="si"><span class="a">主机名</span><span class="b">{{ hostname }}</span></div>
     </div>
   </div>
-
 </div>
 
 <script>
-function draw(id,data,color,maxv){
+// 自动缩放坐标轴的折线图绘制
+function draw(id,data,color){
   const c=document.getElementById(id);if(!c)return
   const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
   const w=r.width,h=100
   c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
   const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
-  const pt={t:12,b:20,l:0,r:0},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  const pt={t:12,b:24,l:6,r:6},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
   if(!data||data.length<2){
     ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
-    ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center'
-    ctx.fillText('采集数据不足',w/2,h/2);return
+    ctx.font='14px -apple-system,sans-serif';ctx.textAlign='center'
+    ctx.fillText('数据采集中',w/2,h/2);return
   }
-  const vals=data.map(v=>Math.min(v,maxv)),mx=maxv
-  const tx=i=>pt.l+(i/(data.length-1))*cw,ty=v=>pt.t+ch-(v/mx)*ch
+  // 自动缩放：取数据范围，上下加10%缓冲
+  const mn=Math.min(...data),mx=Math.max(...data)
+  // 至少保留10%的范围，保证折线有波动
+  const range=Math.max(mx-mn,10)
+  const yMin=Math.max(0,mn-range*0.1)
+  const yMax=Math.min(100,mx+range*0.1)
+  const vals=data.map(v=>Math.min(v,yMax))
+  const tx=i=>pt.l+(i/(data.length-1))*cw,ty=v=>pt.t+ch-((v-yMin)/(yMax-yMin))*ch
+  // 网格
   ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
   for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
-  const labels={{ timestamps|safe }},n=data.length,step=Math.max(1,Math.floor(n/6))
-  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.15){% endif %}';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center'
-  for(let i=0;i<n;i+=step)ctx.fillText(labels[i]||'',tx(i),pt.t+ch+14)
+  // 刻度标签（显示真实值）
+  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='right'
+  for(let g=0;g<=4;g++){const v=yMax-(g/4)*(yMax-yMin);ctx.fillText(Math.round(v)+'%',pt.l-4,pt.t+(g/4)*ch+4)}
+  // 时间标签
+  const lb={{ timestamps|safe }},n=data.length,step=Math.max(1,Math.floor(n/6))
+  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center'
+  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
+  // 填充
   ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
   for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
   ctx.lineTo(tx(vals.length-1),pt.t+ch);ctx.lineTo(tx(0),pt.t+ch);ctx.closePath()
-  const g=ctx.createLinearGradient(0,pt.t,0,pt.t+ch)
-  g.addColorStop(0,color+'40');g.addColorStop(1,color+'08')
-  ctx.fillStyle=g;ctx.fill()
+  const gd=ctx.createLinearGradient(0,pt.t,0,pt.t+ch)
+  gd.addColorStop(0,color+'40');gd.addColorStop(1,color+'08')
+  ctx.fillStyle=gd;ctx.fill()
+  // 折线
   ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
   for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
   ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()
+  // 点
+  for(let i=0;i<vals.length;i++){ctx.beginPath();ctx.arc(tx(i),ty(vals[i]),2.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
 }
+
 const cpuD={{ cpu.data|safe }},memD={{ mem.data|safe }}
 {% if gpu %}const gpuD={{ gpu.data|safe }};{% endif %}
 const netD={{ net.down_data|safe }},netU={{ net.up_data|safe }}
-draw('cpuC',cpuD,'#007aff',Math.max(...cpuD,100))
-draw('memC',memD,'#5856d6',Math.max(...memD,100))
-{% if gpu %}draw('gpuC',gpuD,'#34c759',Math.max(...gpuD,100));{% endif %}
+draw('cpuC',cpuD,'#007aff');draw('memC',memD,'#5856d6');
+{% if gpu %}draw('gpuC',gpuD,'#34c759');{% endif %}
 (function(){
   const c=document.getElementById('netC');if(!c)return
   const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
-  const w=r.width,h=100
-  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
+  const w=r.width,h=100;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
   const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
-  const pt={t:12,b:20,l:0,r:0},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  const pt={t:12,b:24,l:6,r:6},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
   if(netD.length<2){
     ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
-    ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center'
-    ctx.fillText('等待数据采集',w/2,h/2);return
+    ctx.font='14px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('等待数据采集',w/2,h/2);return
   }
   const n=netD.length,mx=Math.max(...netD,...netU,1)
   const tx=i=>pt.l+(i/(n-1))*cw,ty=v=>pt.t+ch-(v/mx)*ch
   ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
   for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
   const lb={{ timestamps|safe }},step=Math.max(1,Math.floor(n/6))
-  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.15){% endif %}';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center'
-  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+14)
+  ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center'
+  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
   function dr(d,s){ctx.beginPath();ctx.moveTo(tx(0),ty(d[0]));for(let i=1;i<d.length;i++)ctx.lineTo(tx(i),ty(d[i]));ctx.strokeStyle=s;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
   dr(netD,'#007aff');dr(netU,'#34c759')
 })()

@@ -79,6 +79,8 @@ class ServerStatusPlugin(Star):
 
         self._pw_browser = None
         self._pw = None
+        self._render_lock = asyncio.Lock()
+        self._checkstatus_lock = asyncio.Lock()
 
         self._hostname = platform.node()
         self._arch = platform.machine()
@@ -357,49 +359,49 @@ class ServerStatusPlugin(Star):
             self._pw = None
 
     async def _render(self) -> Optional[Path]:
-        data = self._prepare_data()
-        if not data:
-            return None
-        try:
-            from jinja2 import Environment, FileSystemLoader
-            tpl = Environment(loader=FileSystemLoader(str(self._template_dir))).get_template("status_template.html")
-            html = tpl.render(**data)
-        except Exception as e:
-            self.logger.exception(f"模板渲染失败: {e}")
-            return None
-
-        browser = await self._get_pw()
-        if not browser:
-            return None
-
-        data_dir = StarTools.get_data_dir(PLUGIN_NAME)
-        os.makedirs(data_dir, exist_ok=True)
-        out = Path(data_dir) / f"status_{int(time.time())}.png"
-        self._cleanup(data_dir, keep=5)
-
-        # 每次使用独立 context 避免状态残留
-        context = await browser.new_context(
-            viewport={"width": 720, "height": 1},
-            device_scale_factor=2,
-        )
-        try:
-            page = await context.new_page()
-            await page.set_content(html, wait_until="load")
-            await asyncio.sleep(0.5)
-            h = await page.evaluate("document.body.scrollHeight")
-            await page.set_viewport_size({"width": 720, "height": h})
-            await asyncio.sleep(0.3)
-            await page.screenshot(path=str(out), full_page=True, type="png")
-            self.logger.info(f"✅ 卡片已生成: {out}")
-            return out
-        except Exception as e:
-            self.logger.exception(f"截图失败: {e}")
-            return None
-        finally:
+        async with self._render_lock:
+            data = self._prepare_data()
+            if not data:
+                return None
             try:
-                await context.close()
-            except Exception:
-                pass
+                from jinja2 import Environment, FileSystemLoader
+                tpl = Environment(loader=FileSystemLoader(str(self._template_dir))).get_template("status_template.html")
+                html = tpl.render(**data)
+            except Exception as e:
+                self.logger.exception(f"模板渲染失败: {e}")
+                return None
+
+            browser = await self._get_pw()
+            if not browser:
+                return None
+
+            data_dir = StarTools.get_data_dir(PLUGIN_NAME)
+            os.makedirs(data_dir, exist_ok=True)
+            out = Path(data_dir) / f"status_{int(time.time())}.png"
+            self._cleanup(data_dir, keep=5)
+
+            context = await browser.new_context(
+                viewport={"width": 720, "height": 1},
+                device_scale_factor=2,
+            )
+            try:
+                page = await context.new_page()
+                await page.set_content(html, wait_until="load")
+                await asyncio.sleep(0.5)
+                h = await page.evaluate("document.body.scrollHeight")
+                await page.set_viewport_size({"width": 720, "height": h})
+                await asyncio.sleep(0.3)
+                await page.screenshot(path=str(out), full_page=True, type="png")
+                self.logger.info(f"✅ 卡片已生成: {out}")
+                return out
+            except Exception as e:
+                self.logger.exception(f"截图失败: {e}")
+                return None
+            finally:
+                try:
+                    await context.close()
+                except Exception:
+                    pass
 
     def _cleanup(self, d: str, keep: int = 5):
         try:
