@@ -1,0 +1,43 @@
+{
+  "collect_interval_seconds": {
+    "type": "int",
+    "description": "数据采集间隔（秒）",
+    "hint": "后台每多少秒采集一次硬件数据。建议60秒，数据保留30条=30分钟趋势。可设为30~300秒之间",
+    "default": 60,
+    "slider": {
+      "min": 10,
+      "max": 300,
+      "step": 10
+    }
+  },
+  "max_data_points": {
+    "type": "int",
+    "description": "最大数据保留条数",
+    "hint": "环形缓冲区大小，决定折线图显示的时间跨度。例如60秒采集一次、保留30条=30分钟趋势；保留60条=60分钟趋势",
+    "default": 30,
+    "slider": {
+      "min": 10,
+      "max": 120,
+      "step": 5
+    }
+  },
+  "enable_gpu_monitor": {
+    "type": "bool",
+    "description": "启用GPU监控",
+    "hint": "是否检测并采集NVIDIA GPU信息（使用pynvml）。如未安装NVIDIA驱动会自动跳过",
+    "default": true
+  },
+  "enable_temperature_monitor": {
+    "type": "bool",
+    "description": "启用温度监控",
+    "hint": "是否采集CPU/GPU温度。Linux下通过psutil.sensors_temperatures()获取；Windows下需要管理员权限",
+    "default": true
+  },
+  "theme_mode": {
+    "type": "string",
+    "description": "主题模式",
+    "hint": "状态卡片图的配色风格",
+    "default": "dark",
+    "options": ["dark", "light"]
+  }
+}

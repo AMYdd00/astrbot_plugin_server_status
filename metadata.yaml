@@ -1,0 +1,25 @@
+name: "astrbot_plugin_server_status"
+display_name: 服务器状态监控
+author: "AMYdd00"
+desc: "Apple PPT风格服务器状态监控插件。支持实时采集CPU/内存/GPU/Swap/存储/网络数据，保留最近30分钟趋势，使用/checkstatus命令生成精美状态卡片图。"
+short_desc: "Apple风格服务器状态监控 - 实时数据采集+30分钟趋势折线图"
+version: "1.0.0"
+
+repo: "https://github.com/AMYdd00/astrbot_plugin_server_status"
+support_platforms:
+  - aiocqhttp
+  - telegram
+  - discord
+  - lark
+  - qq_official
+  - dingtalk
+  - kook
+  - slack
+  - mattermost
+  - satori
+
+astrbot_version: ">=4.0"
+
+requirements:
+  - astrbot>=4.0
+  - python>=3.10
