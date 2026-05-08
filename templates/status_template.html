@@ -77,7 +77,6 @@ body{
     <div class="meta">{{ time_range }}{% if sysinfo.is_docker %} · 🐳 Docker{% endif %}</div>
   </div>
 
-  <!-- CPU -->
   <div class="card">
     <div class="card-label">🖥 CPU</div>
     <div class="row">
@@ -93,7 +92,6 @@ body{
     <div class="cw"><canvas id="cpuC"></canvas></div>
   </div>
 
-  <!-- MEM + SWAP -->
   <div class="card">
     <div class="card-label">💾 Memory & Swap</div>
     <div class="dual">
@@ -115,7 +113,6 @@ body{
     </div>
   </div>
 
-  <!-- GPU -->
   {% if gpu %}
   <div class="card">
     <div class="card-label">🎮 GPU</div>
@@ -131,7 +128,6 @@ body{
   </div>
   {% endif %}
 
-  <!-- DISK -->
   <div class="card">
     <div class="card-label">💽 Storage</div>
     {% if disks %}
@@ -146,7 +142,6 @@ body{
     {% endif %}
   </div>
 
-  <!-- NETWORK -->
   <div class="card">
     <div class="card-label">🌐 Network</div>
     <div class="nl">
@@ -156,7 +151,6 @@ body{
     <div class="cw"><canvas id="netC"></canvas></div>
   </div>
 
-  <!-- SYSTEM -->
   <div class="card">
     <div class="card-label">📋 System</div>
     <div class="sg">
@@ -171,75 +165,61 @@ body{
 </div>
 
 <script>
-// 自动缩放坐标轴的折线图绘制
 function draw(id,data,color){
-  const c=document.getElementById(id);if(!c)return
-  const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
-  const w=r.width,h=100
+  var c=document.getElementById(id);if(!c)return
+  var r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
+  var w=r.width,h=100
   c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
-  const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
-  const pt={t:12,b:24,l:14,r:14},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  var ctx=c.getContext('2d');ctx.scale(dpr,dpr)
+  var pt={t:12,b:24,l:34,r:14},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
   if(!data||data.length<2){
     ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
     ctx.font='14px -apple-system,sans-serif';ctx.textAlign='center'
     ctx.fillText('数据采集中',w/2,h/2);return
   }
-  // 自动缩放：取数据范围，上下加10%缓冲
-  const mn=Math.min(...data),mx=Math.max(...data)
-  // 至少保留10%的范围，保证折线有波动
-  const range=Math.max(mx-mn,10)
-  const yMin=Math.max(0,mn-range*0.1)
-  const yMax=Math.min(100,mx+range*0.1)
-  const vals=data.map(v=>Math.min(v,yMax))
-  const tx=i=>pt.l+(i/(data.length-1))*cw,ty=v=>pt.t+ch-((v-yMin)/(yMax-yMin))*ch
-  // 网格
+  var mn=Math.min.apply(null,data),mx=Math.max.apply(null,data)
+  var range=Math.max(mx-mn,20)
+  var yMin=Math.max(0,mn-range*0.1),yMax=Math.min(100,mx+range*0.1)
+  var vals=data.map(function(v){return Math.min(v,yMax)})
+  function tx(i){return pt.l+(i/(data.length-1))*cw}
+  function ty(v){return pt.t+ch-((v-yMin)/(yMax-yMin))*ch}
   ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
-  for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
-  // 刻度标签（显示真实值）
+  for(var g=0;g<=4;g++){var gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
   ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='right'
-  for(let g=0;g<=4;g++){const v=yMax-(g/4)*(yMax-yMin);ctx.fillText(Math.round(v)+'%',pt.l-4,pt.t+(g/4)*ch+4)}
-  // 时间标签
-  const lb={{ timestamps|safe }},n=data.length,step=Math.max(1,Math.floor(n/6))
+  for(var g=0;g<=4;g++){var lv=yMax-(g/4)*(yMax-yMin);ctx.fillText(Math.round(lv)+'%',pt.l-4,pt.t+(g/4)*ch+4)}
+  var lb={{ timestamps|safe }},n=data.length,step=Math.max(1,Math.floor(n/6))
   ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center'
-  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
-  // 填充
+  for(var i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
   ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
-  for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
+  for(var i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
   ctx.lineTo(tx(vals.length-1),pt.t+ch);ctx.lineTo(tx(0),pt.t+ch);ctx.closePath()
-  const gd=ctx.createLinearGradient(0,pt.t,0,pt.t+ch)
+  var gd=ctx.createLinearGradient(0,pt.t,0,pt.t+ch)
   gd.addColorStop(0,color+'40');gd.addColorStop(1,color+'08')
   ctx.fillStyle=gd;ctx.fill()
-  // 折线
   ctx.beginPath();ctx.moveTo(tx(0),ty(vals[0]))
-  for(let i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
+  for(var i=1;i<vals.length;i++)ctx.lineTo(tx(i),ty(vals[i]))
   ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()
-  // 点
-  for(let i=0;i<vals.length;i++){ctx.beginPath();ctx.arc(tx(i),ty(vals[i]),2.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
+  for(var i=0;i<vals.length;i++){ctx.beginPath();ctx.arc(tx(i),ty(vals[i]),2,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
 }
-
-const cpuD={{ cpu.data|safe }},memD={{ mem.data|safe }}
-{% if gpu %}const gpuD={{ gpu.data|safe }};{% endif %}
-const netD={{ net.down_data|safe }},netU={{ net.up_data|safe }}
-draw('cpuC',cpuD,'#007aff');draw('memC',memD,'#5856d6');
-{% if gpu %}draw('gpuC',gpuD,'#34c759');{% endif %}
+var cpuD={{ cpu.data|safe }},memD={{ mem.data|safe }}{% if gpu %},gpuD={{ gpu.data|safe }}{% endif %}
+var netD={{ net.down_data|safe }},netU={{ net.up_data|safe }}
+draw('cpuC',cpuD,'#007aff');draw('memC',memD,'#5856d6');{% if gpu %}draw('gpuC',gpuD,'#34c759');{% endif %}
 (function(){
-  const c=document.getElementById('netC');if(!c)return
-  const r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
-  const w=r.width,h=100;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
-  const ctx=c.getContext('2d');ctx.scale(dpr,dpr)
-  const pt={t:12,b:24,l:14,r:14},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
-  if(netD.length<2){
-    ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}'
-    ctx.font='14px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('等待数据采集',w/2,h/2);return
-  }
-  const n=netD.length,mx=Math.max(...netD,...netU,1)
-  const tx=i=>pt.l+(i/(n-1))*cw,ty=v=>pt.t+ch-(v/mx)*ch
+  var c=document.getElementById('netC');if(!c)return
+  var r=c.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1
+  var w=r.width,h=100;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px'
+  var ctx=c.getContext('2d');ctx.scale(dpr,dpr)
+  var pt={t:12,b:24,l:34,r:14},cw=w-pt.l-pt.r,ch=h-pt.t-pt.b
+  if(netD.length<2){ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.15){% else %}rgba(0,0,0,0.1){% endif %}';ctx.font='14px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('等待数据采集',w/2,h/2);return}
+  var n=netD.length,mx=Math.max.apply(null,netD.concat(netU).concat([1]))
+  function tx(i){return pt.l+(i/(n-1))*cw}
+  function ty(v){return pt.t+ch-(v/mx)*ch}
   ctx.strokeStyle='{% if theme=="dark" %}rgba(255,255,255,0.04){% else %}rgba(0,0,0,0.05){% endif %}';ctx.lineWidth=1
-  for(let g=0;g<=4;g++){const gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
-  const lb={{ timestamps|safe }},step=Math.max(1,Math.floor(n/6))
+  for(var g=0;g<=4;g++){var gy=pt.t+(g/4)*ch;ctx.beginPath();ctx.moveTo(pt.l,gy);ctx.lineTo(pt.l+cw,gy);ctx.stroke()}
+  var lb={{ timestamps|safe }},step=Math.max(1,Math.floor(n/6))
   ctx.fillStyle='{% if theme=="dark" %}rgba(255,255,255,0.2){% else %}rgba(0,0,0,0.2){% endif %}';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center'
-  for(let i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
-  function dr(d,s){ctx.beginPath();ctx.moveTo(tx(0),ty(d[0]));for(let i=1;i<d.length;i++)ctx.lineTo(tx(i),ty(d[i]));ctx.strokeStyle=s;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
+  for(var i=0;i<n;i+=step)ctx.fillText(lb[i]||'',tx(i),pt.t+ch+16)
+  function dr(d,s){ctx.beginPath();ctx.moveTo(tx(0),ty(d[0]));for(var i=1;i<d.length;i++)ctx.lineTo(tx(i),ty(d[i]));ctx.strokeStyle=s;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
   dr(netD,'#007aff');dr(netU,'#34c759')
 })()
 </script>
